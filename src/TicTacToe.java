@@ -1,34 +1,62 @@
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Cell;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
+
 public class TicTacToe extends Application {
     private char whoseTurn = 'X';
     private Cell[][] cells = new Cell[3][3];
     private Label statusLbl = new Label("X's turn to play");
+    private GridPane pane = new GridPane();
+
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        GridPane pane = new GridPane();
+    public void start(Stage primaryStage){
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j< 3; j++) {
                 pane.add(cells[i][j] = new Cell(), j, i);
             }
         }
         BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(pane); borderPane.setBottom(statusLbl);
+        HBox hbox = new HBox();
+        hbox.setPadding(new Insets(5));
+        hbox.setSpacing(100);
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().add(statusLbl);
+
+        Button reset = new Button("Reset");
+        reset.setOnAction(e -> init());
+        hbox.getChildren().add(reset);
+
+        borderPane.setCenter(pane);
+        borderPane.setBottom(hbox);
 
         Scene scene = new Scene(borderPane, 350,400);
         primaryStage.setScene(scene);
         primaryStage.setTitle("TicTacToe");
         primaryStage.show();
+    }
+
+    public void init() {
+        pane.getChildren().clear();
+        cells = new Cell[3][3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j< 3; j++) {
+                pane.add(cells[i][j] = new Cell(), j, i);
+            }
+        }
+        statusLbl.setText("X's turn to play");
+        whoseTurn = 'X';
     }
 
     public boolean isFull() {
@@ -78,6 +106,10 @@ public class TicTacToe extends Application {
 
         public char getToken() {
             return token;
+        }
+
+        public void clear() {
+            this.getChildren().clear();
         }
 
         public void setToken(char c) {
